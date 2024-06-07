@@ -20,6 +20,7 @@ public class ChatServer extends WebSocketServer {
         clients.put(usuario, conn);
     }
 
+    //"usuario:mensaje"
     public String obtenerUsuario(String mensaje){
         String usuario;
 
@@ -58,7 +59,13 @@ public class ChatServer extends WebSocketServer {
                 // Mensaje del admin: "admin:usuario_destino:contenido"
                 String[] parts = message.split(":");
                 String cliente = parts[1];
-                clients.get(cliente).send(parts[0]+":"+parts[2]);
+                if(clients.containsKey(cliente)){
+                    clients.get(cliente).send(parts[0]+":"+parts[2]);
+                }else{
+                    System.out.println("Usuario no encontrado");
+                    conn.send("Usuario no encontrado");
+                }
+                
             }
             clients.get("admin").send(message);
             conn.send(message);
